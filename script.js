@@ -1,10 +1,16 @@
 var currentHour = new Date().getHours();
 
-//get this from localStorage
-var todos = {
-  9: "get shopping list",
-  12: "eat lunch",
-};
+// Object for events
+var todos = {};
+
+// If empty object
+if (localStorage.getItem("todos") == null) {
+  localStorage.setItem("todos", "[]");
+} else {
+  todos = JSON.parse(localStorage.getItem("todos"));
+}
+
+// Create schedule
 function render() {
   var today = dayjs().format("dddd, MMMM d");
   $("#currentDay").text(today);
@@ -27,6 +33,19 @@ function render() {
   }
 }
 
-//when saving todo, update localStorage
+// update local storage
+$(document).on("click", ".saveBtn", function () {
+  // get id of row clicked
+  var newItemHour = this.id;
+  // get text entered
+  var newEvent = $(this).siblings(".description").val();
+  addItem(todos, newItemHour, newEvent);
+});
+
+// Add item to todos object
+function addItem(todos, todosTime, todosValue) {
+  todos[todosTime] = todosValue;
+  localStorage.setItem("todos", JSON.stringify(todos));
+}
 
 render();
